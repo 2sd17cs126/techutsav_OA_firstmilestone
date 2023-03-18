@@ -14,6 +14,34 @@ import certifi
 
 
 from django.views.decorators.csrf import csrf_exempt
+
+def func_generator(keyword,argument,result_file):
+    
+    structure=keyword+'(\''+argument+'\',()=>{'+'\n'+'})'+'\n'
+    result_file.write(structure)
+
+def func_generator_with_variable(keyword,line,result_file):
+    variable_string="("
+    removing_word_list=[]
+    removing_word_list.append(keyword)
+    removing_word_list.append(',')
+    preced_place_holder=""
+    for data in re.findall("<[a-z_0-9]*>", line):
+        preced_place_holder=preced_place_holder+"{"+"string"+"},"
+        print(preced_place_holder)
+        variable_string=variable_string+data[1:-1]+','
+        temp="\"<"+data[1:-1]+">\""
+        removing_word_list.append(temp)
+    preced_place_holder=preced_place_holder[:-1]
+    variable_string=variable_string[:-1]+')'
+    for rem in removing_word_list:
+        if rem in line:
+            print("rem:"+rem)
+            line=line.replace(rem,"")
+    print("precedence:"+preced_place_holder)
+    structure=keyword+'(\''+line+preced_place_holder+'\','+variable_string+'=>{'+'\n'+'})'+'\n'
+    result_file.write(structure)
+
 # Create your views here.
 @csrf_exempt
 def myFunc(e):
@@ -27,7 +55,7 @@ def data_operation(request):
         id=data['pattern'] 
         print("length is :"+ str(len(id)))
         print(id)
-        cluster = MongoClient("mongodb+srv://newuser1:Abuzarm2@cluster0.qqe5xei.mongodb.net/?retryWrites=true&w=majority")
+        cluster = MongoClient("mongodb://localhost:27017")
         db = cluster["test"]
         collection=db["test"]
         result = collection.find_one({"id":id} )
@@ -67,14 +95,14 @@ def bdd(request):
         table_data=data['table_data']
         factor_name=data['column_data']
         
-        file=open('text1.txt','w')
-        scenerio="@"+data['tag']+'\n'+"Scenerio Outline:"
+        file=open('text1.feature','w')
+        scenerio="@"+data['tag']+'\n'+"Scenario Outline:"
         scenerio+=data['scenerio']
         scenerio=scenerio+'\n'
 
         string1=data['pre']
         string1=string1+'\n'
-        string2="""Funrnish the information """
+        string2="""And Funrnish the information """
         
         for factor in factor_name:
             string2+="\"<"
@@ -98,4 +126,29 @@ def bdd(request):
             string3+='\n'
         result=scenerio+string1+string2+string3
         file.write(result)
+    return HttpResponse(json.dumps({"file_content":result}))
+
+@csrf_exempt
+def step_def(request):
+    file=json.loads(request.body.decode('utf-8'))
+    content=file['file_data']
+    
+    content=content[:content.find("Examples:")]
+
+    to_iter=content.split("\n")[2:]
+    result_file=open('result.js','w')
+    for line in to_iter:
+        if "Given" in line and len(re.findall("<[a-z_0-9]*>", line))==0 :
+            func_generator("Given",line[len("Given"):],result_file)
+        elif "And" in line and len(re.findall("<[a-z_0-9]*>", line))==0:
+            func_generator("And",line[len("And"):],result_file)
+        elif "When" in line and len(re.findall("<[a-z_0-9]*>", line))==0:
+            func_generator("When",line[len("When"):],result_file)
+        elif "And" in line and len(re.findall("<[a-z_0-9]*>", line))!=0:
+            func_generator_with_variable("And",line,result_file)
+        elif "Given" in line and len(re.findall("<[a-z_0-9]*>", line))!=0:
+            func_generator_with_variable("Given",line,result_file)
+        elif "When" in line and len(re.findall("<[a-z_0-9]*>", line))!=0:
+            func_generator_with_variable("When",line,result_file)
+    result_file.close()
     return HttpResponse("ok")

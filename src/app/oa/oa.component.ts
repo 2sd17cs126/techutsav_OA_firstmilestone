@@ -36,6 +36,8 @@ export class OAComponent {
   flagrefresh=false;
   Scenerio=""
   tag=""
+  file_content=""
+  content={}
   id:string=''
   Factors=0
   Pre_Requisite=""
@@ -404,8 +406,14 @@ submit(){
  console.log("map:")
  console.log(this.map_col)
  }
+step(){
+  this.http
+    .post('http://127.0.0.1:8000/stepdefination',{
+      file_data:this.file_content
+    }).subscribe()
 
-bdd(){
+}
+bdd(id:string){
   let factor_names=[]
   let temp=[]
   for (let index = 0; index < this.displayedColumns.length; index++){
@@ -424,8 +432,14 @@ bdd(){
       tag:this.tag
 
     })
-    .subscribe();
+    .subscribe((data) => (this.content = data));
+    this.sleep(3000).then(() => {if (this.content) {
+      this.file_content=this.content['file_content']
+      console.log("file_content")
+      console.log(this.file_content)
+      this.modalService.open(id);
     
+     }})
 }
 
 generate(id:string) {

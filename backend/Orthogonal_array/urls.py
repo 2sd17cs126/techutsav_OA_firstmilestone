@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns=[
     path('',views.data_operation,name='home'),
-    path('bdd',views.bdd)
+    path('bdd',views.bdd),
+    path('stepdefination',views.step_def)
 ]

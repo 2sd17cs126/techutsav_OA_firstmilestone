@@ -47,7 +47,7 @@
         <button *ngIf="flagoa == true && table_generated==false" class="button button2" (click)="CreateOA('custom-modal-1')">Create OA</button>
         <button *ngIf="table_generated==true" class="button button2" (click)="Home()">Home</button>
         <button *ngIf="flagnext == true" class="button button2"(click)="display()">Next</button>
-        <button *ngIf="table_generated==true" class="button button2" (click)="bdd()">BDD</button>
+        <button *ngIf="table_generated==true" class="button button2" (click)="bdd('custom2')">BDD</button>
       
       </div>
 
@@ -110,6 +110,12 @@
   </div>
   <button (click)="closeModal('custom-modal-1');">Close</button>
   <button (click)="submit();">Submit</button>  
+</jw-modal>
+<jw-modal id="custom2">
+  <div style="white-space: pre-wrap;">
+  {{file_content}}
+  <button (click)="step();">Generate StepDefination</button>
+  </div>
 </jw-modal>
 
 
