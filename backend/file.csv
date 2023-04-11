@@ -1,0 +1,4 @@
+type,method,patient,provider
+Appointment 1,Call,Patient1,Provider Name 1
+Appointment 2,Referral,Patient2,Provider Name 2
+

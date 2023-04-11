@@ -1,0 +1,238 @@
+<!--First Screen-->
+<div class="section1" *ngIf="firstScreen==true">
+  <form action="" class="flex-container">
+      <div class="input-container">
+          <label for="factors" style="margin-right: 10px; font-size: 15px;"> No of UI objects</label>
+          <input type="text" [(ngModel)]="Factors" [ngModelOptions]="{standalone: true}">
+      </div>
+      <div class="button-container">
+          <button class="button" style="height: 40px; margin-top: 15px;" (click)="onSave()" ><b> Next</b></button>  
+      </div>
+  </form>
+</div>
+<!--First Screen-->
+
+
+<!-- Second Screen-->
+<div class="section2"  *ngIf="secondScreen==true">
+  
+  <button *ngIf="table_generated==true" class="button button2" (click)="Home()">Home</button>
+  <label class="label-control" style="font-size: 15px;">Number of UI objects : {{Factors}}</label>
+  <button class="btn" *ngIf="flagnext==true" title="clear" (click)="emptylist()"><i class="bi bi-eraser-fill"></i></button>
+  <button class="btn" *ngIf="flagrefresh==true && flagnext==true" title="Undo" (click)="refresh()"><i class="bi bi-arrow-clockwise"></i></button>
+  <button class="button button2" *ngIf="flagoa == true && table_generated==false" (click)="automaticfill()">Fill</button>
+  
+  <div class="flex-container" >  <!--screen-->
+
+    <div class="form-group" style="flex-shrink: 0;" class="input-container"><!--first-->
+      <table class="table1">
+        <tbody>
+          <tr class="titles" style="font-size: 15px;"><th>UI object name</th><th>No. of  Values</th></tr>
+          <tr *ngFor="let row of rows; let index = index">
+          <td><input class="inputId" [(ngModel)]="row.Factor_name" #name="ngModel" value="row.Factor_name"/></td>
+          <td>
+            <input class="inputId" style="width: 50px;" [(ngModel)]="row.Level_count" #name="ngModel" value="row.Level_count"/>
+          </td>
+          </tr>
+        </tbody>
+      </table>
+    
+  
+      <div  style="margin-top: 10px;">
+        <div class="buttons_container">
+          <button *ngIf="table_generated==false" class="button button2" (click)="backfunction()">Back</button>
+          <button *ngIf="flagoa == true && table_generated==false" class="button button2" (click)="CreateOA('custom-modal-1')">Create OA</button>
+          <button *ngIf="table_generated==true" class="button button2" (click)="Home()">Home</button>
+          <button *ngIf="flagnext == true" class="button button2"(click)="display()">Next</button>
+          <button *ngIf="table_generated==true" class="button button2" (click)="bdd()">BDD</button>
+          
+        </div>
+      </div>
+
+
+    </div><!--first-->
+   
+    <div *ngIf="flagoa == true"  class="input-container scroll" style="margin-left: 10px;"> <!--second-->
+      <p style="font-size: 15px;"><b>Factors value</b></p>
+      <div *ngFor="let v of rows" style="display: flex;">
+
+        <input class="inputlevels" *ngFor="let i of v.Level_value" type="text"  style="width: 80px;"[(ngModel)]="i.value" #name="ngModel" class="space"/>
+
+      </div>
+
+
+    
+    </div><!--second-->
+ 
+    <div style="width: 40%; border-left: 1px solid black; overflow: auto;" *ngIf="flag_table==true"  class="input-container" class="table_div">
+      <!--third-->
+      <table align="center" class="table" mat-table *ngIf="flag_table==true"  #table [dataSource]="data" class="mat-elevation-z8">
+     
+        <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+          <thead class="thead-dark">
+          <th  scope="col" mat-header-cell *matHeaderCellDef> {{map_col[column]}} </th>
+          </thead>
+          <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div> <!--third-->
+  </div> <!--screen-->
+
+  <jw-modal  id="custom-modal-1">
+    <h1>Choose the best option:</h1>
+    <div *ngFor="let enum of radio_list">
+      <input  [value]='enum' type="radio" name="enums" [(ngModel)]="SelectedItem">
+      {{enum}}
+    </div>
+    <button (click)="closeModal('custom-modal-1');">Close</button>
+    <button (click)="submit();">Submit</button>  
+  </jw-modal>
+
+  
+</div>
+<!-- Second Screen-->
+
+
+<!--Third Screen-->
+<div class="section2" *ngIf="thirdScreen==true">
+
+  
+  <table class="table1">
+    <tbody>
+      <tr class="titles" style="font-size: 15px">
+        <th>Pre-requisite</th><th>Variables</th><th>Values</th>
+      </tr>
+      <tr  *ngFor="let row of rows1; let index = index">
+        <td>
+          <input class="inputId" style="width: 500px; text-align: left;" [(ngModel)]="row.pre" #name="ngModel" value="row.pre" />
+        </td>
+        <td>
+          <input
+          class="inputId"
+            [(ngModel)]="row.pre_variables"
+            #name="ngModel"
+            value="row.pre_variables"
+          />
+        </td>
+        <td>
+          <input class="inputId"
+            [(ngModel)]="row.pre_values"
+            #name="ngModel"
+            value="row.pre_values"
+          />
+        </td>
+        <td *ngIf="enhanceflag==true">
+          <mat-form-field appearance="fill">
+            
+            <select matNativeControl [(ngModel)]="row.selectedCar" name="car">
+              <option value="" selected></option>
+              <option *ngFor="let car of cars" [value]="car">
+                {{car}}
+              </option>
+            </select>
+          </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="enhanceflag==false" class="buttons_container">
+    <button class="button button2" (click)="onRemoveRow()">Remove</button>
+    <button class="button button2" (click)="onAddRow()">add row</button>
+  </div>
+  <table class="table1">
+    <tbody>
+      <tr class="titles" style="font-size: 15px">
+        <th>Post-requisite</th>
+        <th>Variables2</th>
+        <th>Values2</th>
+      </tr>
+      <tr *ngFor="let row of rows2; let index = index">
+        <td>
+          <input class="inputId" style="width: 500px; text-align: left;" [(ngModel)]="row.post" #name="ngModel" value="row.post" />
+        </td>
+        <td>
+          <input
+          class="inputId"
+            [(ngModel)]="row.post_variables"
+            #name="ngModel"
+            value="row.post_variables"
+          />
+        </td>
+        <td>
+          <input
+            class="inputId"
+            [(ngModel)]="row.post_values"
+            #name="ngModel"
+            value="row.post_values"
+          />
+        </td>
+        <td *ngIf="enhanceflag==true">
+          <mat-form-field appearance="fill">
+            
+            <select matNativeControl [(ngModel)]="row.selectedCar" name="car">
+              <option value="" selected></option>
+              <option *ngFor="let car of cars" [value]="car">
+                {{car}}
+              </option>
+            </select>
+          </mat-form-field>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="enhanceflag==false" class="buttons_container">
+    <button class="button button2" (click)="onRemoveRow2()">Remove</button>
+    <button class="button button2" (click)="onAddRow2()">add row</button>
+  </div>
+
+  <p><label>Tag</label></p>
+  <input type="text" style="width: 150px" [(ngModel)]="tag" />
+  <p><label>Scenario Description</label></p>
+  <textarea
+    style="overflow: auto"
+    [(ngModel)]="Scenerio"
+    name="pre-requisite"
+    id="pre"
+    cols="30"
+    rows="5"
+  ></textarea>
+
+  <button *ngIf="enhanceflag==false" class="button button2" (click)="generate_feature('custom2')">
+    Generate Feature File
+  </button>
+  <button *ngIf="enhanceflag==true" class="button button2" (click)="enhanced_step('custom3')">
+    Enhanced Step Def
+  </button>
+    <jw-modal id="custom2">
+      <div style="white-space: pre-wrap;">
+        {{file_content}}
+  
+        <h4>Select langauge</h4>
+        <mat-form-field appearance="fill">
+          <select matNativeControl [(ngModel)]="language" name="language">
+            <option value="Select" selected></option>
+            <option *ngFor="let lang of lan" [value]="lang.value">
+              {{lang.viewValue}}
+            </option>
+          </select>
+        </mat-form-field>
+    
+        <p> Selected language: {{language}} </p>
+        <button (click)="step('custom2','custom3');">Generate StepDefination</button>
+      </div>
+    </jw-modal>
+  
+    <jw-modal id="custom3">
+      <div style="white-space: pre-wrap;">
+        {{file_content}}
+        <button class="button button2" (click)="Integrate()">Run</button>
+        <button class="button button2" (click)="enhance('custom3')">Enhance</button>
+      </div>
+    </jw-modal>
+
+</div>
+<!--Third Screen-->
