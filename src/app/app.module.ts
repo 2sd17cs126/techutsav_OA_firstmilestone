@@ -18,8 +18,9 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTabsModule} from '@angular/material/tabs'
 import {MatCardModule} from '@angular/material/card';
 import { HelpComponent } from './help/help.component';
-
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { SplitterModule } from "primeng/splitter";
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,8 +28,10 @@ import { SplitterModule } from "primeng/splitter";
     HelpComponent
   ],
   imports: [ModalModule,
+    NgxSpinnerModule,
     SplitterModule,
     HttpClientModule,
+    MatProgressSpinnerModule,
     BrowserModule,
     MatTableModule,
     AppRoutingModule,

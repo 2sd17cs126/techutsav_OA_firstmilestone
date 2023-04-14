@@ -8,7 +8,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponse, JsonResponse
 from .models import Array
 import pymongo
-
+import webbrowser
 from pymongo import MongoClient
 
 import certifi
@@ -441,3 +441,10 @@ def enhanced_step_def(request):
         result_file=open('stepdefinition\BddScenario.java','r')
 
     return HttpResponse(json.dumps({"file_content":result_file.read()}))
+
+
+@csrf_exempt
+def report(request):
+    webbrowser.open_new_tab('C:/Users/Ei12974/Downloads/TechUtsav (5)/TechUtsav/target/cucumber-reports/AutomationResults.html')
+    return HttpResponse("ok")
+

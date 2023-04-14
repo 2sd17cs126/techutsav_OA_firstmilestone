@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ModalService } from 'src/app/_modal/modal.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import {
   FormGroup,
   FormBuilder,
@@ -72,9 +73,11 @@ export class OAComponent {
   one_time_flag=false
   flag_table:boolean=false;
   previous_state=[]
+  typeSelected: string;
+  spinner_flag=false
   /**Initializing row as array of form builder*/
-  constructor(private http: HttpClient,private modalService: ModalService) {
-    
+  constructor(private http: HttpClient,private modalService: ModalService,private spinnerService: NgxSpinnerService) {
+    this.typeSelected = 'ball-fussion';
   }
   Home(){
     this.initialise_back_to_home();
@@ -262,6 +265,7 @@ export class OAComponent {
   }
   
   CreateOA(id:string){
+    this.spinner_flag=true
     if(this.one_time_flag==false){
       for(let i=0;i<Number(this.Factors);i++){
         for(let j=0;j<this.rows[i].Level_value.length;j++){
@@ -309,7 +313,9 @@ export class OAComponent {
     })
     .subscribe((data) => (this.obj = data));
     console.log(this.obj);
-    this.sleep(5000).then(() => {if (this.obj) {
+    this.spinnerService.show();
+    this.sleep(5000).then(() => {this.spinnerService.hide();
+      if (this.obj) {
       if(this.obj.result[0]==false)
       {
     this.fetched_list=this.obj.result[1]
@@ -443,6 +449,7 @@ export class OAComponent {
  console.log(this.displayedColumns)
  console.log("map:")
  console.log(this.map_col)
+ 
 }
 
 
@@ -480,6 +487,10 @@ enhanced_step(id:string){
     this.modalService.open(id);
     
    }})
+}
+Report_open(id:string){
+  this.http
+  .post('http://127.0.0.1:8000/report',{}).subscribe()
 }
 enhance(id:string){
   let temp_row={}

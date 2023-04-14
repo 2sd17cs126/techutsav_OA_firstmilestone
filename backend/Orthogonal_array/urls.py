@@ -9,6 +9,7 @@ urlpatterns=[
     path('automatic',views.automatic),
     path('integrate',views.integrate),
     path('enhance',views.enhance),
-    path('enhanced_step_def',views.enhanced_step_def)
+    path('enhanced_step_def',views.enhanced_step_def),
+    path('report',views.report),
     
 ]
