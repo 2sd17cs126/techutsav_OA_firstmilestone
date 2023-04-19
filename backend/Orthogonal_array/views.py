@@ -36,7 +36,7 @@ def func_generator_java(keyword,argument,result_file,o_w_f='',param='',returnpar
         if param=='nan':
             param=''
         
-        structure='@'+keyword+'(\"^'+argument.strip()+'$\")\n\t'+'public void '+argument.replace(" ", "_")[1:]+'() throws InterruptedException { '+o_w_f+'('+param+')\n\n\t}\n\n\t'
+        structure='@'+keyword+'(\"^'+argument.strip()+'$\")\n\t'+'public void '+argument.replace(" ", "_")[1:]+'() throws InterruptedException { '+'\n\t\t'+o_w_f+'('+param+')\n\n\t}\n\n\t'
     else:
         structure='@'+keyword+'(\"^'+argument.strip()+'$\")\n\t'+'public void '+argument.replace(" ", "_")[1:-1]+'() throws InterruptedException { \n\n\t'+returnparam+'}\n\n\t'
 
@@ -340,6 +340,25 @@ def automatic(request):
         return_list.append(temp)
     print(return_list)
     return HttpResponse(json.dumps({"result":return_list}))
+
+@csrf_exempt
+def automatic_pre_post(request):
+    df = pd.read_csv('pre_post.csv')
+    fetched=json.loads(request.body.decode('utf-8'))
+    row1=fetched['row1']
+    row2=fetched['row2']
+    return_list_pre=[]
+    return_list_post=[]
+   
+    for data in df['pre']:
+        
+        return_list_pre.append(data)
+    
+    for data in df['post']:
+        return_list_post.append(data)
+      
+    return HttpResponse(json.dumps({"result_pre":return_list_pre,"result_post":return_list_post,"tag":df['tag'][0],"scenerios":df['scenerio'][0]}))
+
 @csrf_exempt
 def enhance(request):
     df = pd.read_csv('LowCodeApp.csv')

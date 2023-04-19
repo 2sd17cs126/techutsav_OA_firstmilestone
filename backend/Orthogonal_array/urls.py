@@ -11,5 +11,5 @@ urlpatterns=[
     path('enhance',views.enhance),
     path('enhanced_step_def',views.enhanced_step_def),
     path('report',views.report),
-    
+    path('automatic_pre_post',views.automatic_pre_post),
 ]

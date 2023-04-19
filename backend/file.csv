@@ -1,4 +1,4 @@
 type,method,patient,provider
-Appointment 1,Call,Patient1,Provider Name 1
-Appointment 2,Referral,Patient2,Provider Name 2
+Emergency,Call,John Doe,Henry Taylor
+Telephone,Referral,John Doe,Henry Taylor
 

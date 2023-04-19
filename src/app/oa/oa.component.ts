@@ -265,6 +265,7 @@ export class OAComponent {
   }
   
   CreateOA(id:string){
+    this.spinnerService.show();
     this.spinner_flag=true
     if(this.one_time_flag==false){
       for(let i=0;i<Number(this.Factors);i++){
@@ -311,27 +312,33 @@ export class OAComponent {
     .post('http://127.0.0.1:8000/', {
       pattern: str,
     })
-    .subscribe((data) => (this.obj = data));
-    console.log(this.obj);
-    this.spinnerService.show();
-    this.sleep(5000).then(() => {this.spinnerService.hide();
+    .subscribe((data) => {this.obj = data
+      console.log("in subscribe")
       if (this.obj) {
-      if(this.obj.result[0]==false)
-      {
-    this.fetched_list=this.obj.result[1]
+        
+        if(this.obj.result[0]==false)
+        {
+      this.fetched_list=this.obj.result[1]
+    
   
-
-   for (let index=0;index<=2;index++)
-       {
-       this.radio_list.push(this.fetched_list[index]['id'])
+     for (let index=0;index<=2;index++)
+         {
+         this.radio_list.push(this.fetched_list[index]['id'])
+         }
+         this.spinnerService.hide();
+         this.modalService.open(this.id);
+         }
+      else{
+        this.spinnerService.hide();
+      this.submit()
+     }
+  
        }
-       this.modalService.open(this.id);
-       }
-    else{
-    this.submit()
-   }
-
-     }})
+    
+    });
+    console.log(this.obj);
+    
+    
 
   }
 
@@ -441,6 +448,7 @@ export class OAComponent {
  console.log("inside submit data:")
  console.log(this.data)
  this.table_generated=true
+ 
  this.flag_table=true;
  this.modalService.close(this.id);
  console.log("flag table:")
@@ -509,6 +517,28 @@ enhance(id:string){
 Integrate(){
   this.http
   .post('http://127.0.0.1:8000/integrate',{}).subscribe()
+}
+automaticfill_pre_post(){
+  let temp_row={}
+  this.http
+  .post('http://127.0.0.1:8000/automatic_pre_post',{
+    row1:this.rows1,
+    row2:this.rows2
+
+  }).subscribe((data) => (temp_row = data))
+
+  this.sleep(3000).then(() => {
+    for(let index=0;index<this.rows1.length;index++)
+    {
+      this.rows1[index]['pre']=temp_row['result_pre'][index]
+    }
+    for(let index=0;index<this.rows2.length;index++)
+    {
+      this.rows2[index]['post']=temp_row['result_post'][index]
+    }
+    this.tag=temp_row['tag']
+    this.Scenerio=temp_row['scenerios']
+  })
 }
 automaticfill(){
   let temp_row={}
